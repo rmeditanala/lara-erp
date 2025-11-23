@@ -8,6 +8,7 @@ use App\Http\Controllers\User\UserInvitationController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Customer\CustomerController;
 use App\Http\Controllers\Contact\ContactController;
+use App\Http\Controllers\Lead\LeadController;
 
 Route::get('/', function () {
     return Inertia::render('Welcome', [
@@ -69,6 +70,22 @@ Route::middleware(['auth', 'verified', 'ensure.company'])->group(function () {
             Route::delete('/{contact}', [ContactController::class, 'destroy'])->name('destroy');
             Route::post('/{contact}/make-primary', [ContactController::class, 'makePrimary'])->name('make.primary');
         });
+    });
+
+    // Lead Management Routes
+    Route::prefix('leads')->name('leads.')->group(function () {
+        Route::get('/', [LeadController::class, 'index'])->name('index');
+        Route::get('/create', [LeadController::class, 'create'])->name('create');
+        Route::post('/', [LeadController::class, 'store'])->name('store');
+        Route::get('/search/api', [LeadController::class, 'search'])->name('search.api');
+        Route::get('/stats/api', [LeadController::class, 'stats'])->name('stats.api');
+        Route::post('/bulk-action', [LeadController::class, 'bulkAction'])->name('bulk.action');
+        Route::post('/{lead}/convert', [LeadController::class, 'convert'])->name('convert');
+
+        Route::get('/{lead}', [LeadController::class, 'show'])->name('show');
+        Route::get('/{lead}/edit', [LeadController::class, 'edit'])->name('edit');
+        Route::put('/{lead}', [LeadController::class, 'update'])->name('update');
+        Route::delete('/{lead}', [LeadController::class, 'destroy'])->name('destroy');
     });
 });
 
